@@ -1,16 +1,16 @@
 
-imgA = im2double(imread('./data/test1/1.jpg'));
-imgB = im2double(imread('./data/test1/2.jpg'));
+imgA = im2double(imread('./data/test1/2.jpg'));
+imgB = im2double(imread('./data/test1/1.jpg'));
 
 % -------------------------------------------------------------------------
 % Get the feature points and match them.
-fpvec = getFeaturePoints2(imgA, imgB, 0.25);
+fpvec = getFeaturePoints2(imgA, imgB, 0.5);
 h = show_correspondence2(imgA, imgB, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
 
 
 % -------------------------------------------------------------------------
 % Now compute homographies.
-inlierThresh      = 4;
+inlierThresh      = 3;
 bestInliers       = 0;
 best_inlier_vec   = zeros(1,4);
 bestH             = zeros(3,3);
