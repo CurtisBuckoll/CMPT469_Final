@@ -2,13 +2,13 @@
 imgA = im2double(imread('./data/notredame/1.jpg'));
 imgB = im2double(imread('./data/notredame/2.jpg'));
 
-fpvec = getFeaturePoints2(imgA, imgB, 0.25);
-h = show_correspondence2(imgA, imgB, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
+fpvec = getFeaturePoints2(imgA, imgB, 0.2);
+h = show_correspondence2(imgA, imgA, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
 % -----------------------------------
 
 
 
-cornersA = detectHarrisFeatures(rgb2gray(imgA));
+%cornersA = detectHarrisFeatures(rgb2gray(imgA));
 cornersB = detectHarrisFeatures(rgb2gray(imgB));
 
 % Get the interest points.

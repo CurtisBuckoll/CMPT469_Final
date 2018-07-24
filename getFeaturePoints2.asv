@@ -1,0 +1,127 @@
+function fpvec = getFeaturePoints2(imgA, imgB, thresh)
+
+peak_thresh = 0.01;
+edge_thresh = 4.0;
+
+[f1,d1] = vl_sift(single(rgb2gray(imgA)), 'PeakThresh', peak_thresh, 'edgethresh', edge_thresh );
+[f2,d2] = vl_sift(single(rgb2gray(imgB)), 'PeakThresh', peak_thresh, 'edgethresh', edge_thresh );
+matches = vl_ubcmatch(d1, d2);
+
+size(matches, 2)
+
+points = zeros(1,4);
+for i=1:size(matches, 2)
+    points(i,:) = [f1((1:2), 1) f2((1:2), 1) ]
+end
+
+% Resize so they are all the same size for convenience. Make the larger
+% matrix contain the same number of entries as the smaller one.
+minsz = min(size(f1,2), size(f2,2));
+% f1 = f1(:,1:minsz);
+% f2 = f2(:,1:minsz); 
+% d1 = d1(:,1:minsz); 
+% d2 = d2(:,1:minsz); 
+
+if ( minsz == 0)
+    % catch in case we didn't get any keypoints.
+   keyboard; 
+end
+
+% Work with column oriented vectors for convenience.
+f1 = f1';
+f2 = f2';
+d1 = d1';
+d2 = d2';
+
+
+%h = show_correspondence(imgA, imgB, f1(:,1), f1(:,2), f2(:,1), f2(:,2));
+
+%---------------------------------------------------%
+
+res_vec = zeros(1,6);
+res_ratio_vec = zeros(1,5);
+
+% This contains the result: [ x1, y1, x2, y2, best_cost, next_best ]
+res1 = [ 0, 0, 0, 0, 0, 0 ];
+%res2 = [ 0, 0, 0, 0, 0, 0 ];
+
+best_cost = 999999999999;
+next_best = 999999999999;
+
+
+for i=1:minsz
+
+    for j=1:minsz
+%         d1(i,:)
+%         d2(j,:)
+        c = computeDescriptorDistance(d1(i,:), d2(j,:));
+        %c = SSD_patch(imgA, imgB, p1(i,1), p1(i,2), p2(j,1), p2(j,2), 11);
+        if c < best_cost
+            best_cost = c;
+            res1(:,1:5) = [ f1(i,1), f1(i,2), f2(j,1), f2(j,2), c ];
+            %res1(:,1:5) = [ p1(i,1), p1(i,2), p2(j,1), p2(j,2), c ];
+        elseif c < next_best
+            next_best = c;
+            res1(:,6)   = c;
+        end   
+    end
+    
+%     best_cost = 999999999999;
+%     next_best = 999999999999;
+%     
+%     for k=i:size(f1,1)
+%         
+%         c = computeDescriptorDistance(d1(k,:), d2(i,:));
+%         %c = SSD_patch(imgA, imgB, p1(k,1), p1(k,2), p2(i,1), p2(i,2), 11);
+%         if c < best_cost
+%             best_cost = c;
+%             res2(:,1:5) = [ f1(k,1), f1(k,2), f2(i,1), f2(i,2), c ];
+%             %res2(:,1:5) = [ p1(k,1), p1(k,2), p2(i,1), p2(i,2), c ];
+%         elseif c < next_best
+%             next_best = c;
+%             res2(:,6)   = c;
+%         end   
+%     end
+
+    res_vec(i,:) = res1;
+    r = res1(:,5) / res1(:,6);
+    res_ratio_vec(i,1:4) = res1(:,1:4);
+    res_ratio_vec(i,5)   = r;
+    % compare costs, take the better of the two.
+%     if (res1(:,5) < res2(:,5))
+%         res_vec(i,:) = res1;
+%     else
+%         res_vec(i,:) = res2;
+%     end
+%     
+%     % compare the costs when ratio tested. Want the min one.
+%     r1 = res1(:,5) / res1(:,6);
+%     r2 = res2(:,5) / res2(:,6);
+%     if (r1 < r2)
+%         res_ratio_vec(i,1:4) = res1(:,1:4);
+%         res_ratio_vec(i,5)   = r1;
+%     else
+%         res_ratio_vec(i,1:4) = res2(:,1:4);
+%         res_ratio_vec(i,5)   = r2;
+%     end
+end
+
+fpvec = zeros(1,5);
+index = 1;
+for i=1:size(res_ratio_vec, 1)
+    if res_ratio_vec(i,5) < thresh
+       fpvec(index,:) = res_ratio_vec(i,:);
+       index = index+1;
+    end
+end
+
+end
+
+
+function cost = computeDescriptorDistance(d1, d2)
+    diff = (double(d1) - double(d2)).^2;
+    cost = sum(diff);
+end
+
+
+
