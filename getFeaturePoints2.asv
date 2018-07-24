@@ -5,8 +5,6 @@ edge_thresh = 6.0;
 
 % [f1,d1] = vl_sift(single(rgb2gray(imgA)), 'PeakThresh', peak_thresh, 'edgethresh', edge_thresh );
 % [f2,d2] = vl_sift(single(rgb2gray(imgB)), 'PeakThresh', peak_thresh, 'edgethresh', edge_thresh );
-[f1,d1] = vl_sift(single(rgb2gray(imgA)));
-[f2,d2] = vl_sift(single(rgb2gray(imgB)));
 
 matches = getFeatureMatches(d1, d2, thresh);
 
