@@ -1,9 +1,9 @@
 
-imgA = im2double(imread('./data/test5/2.jpg'));
-imgB = im2double(imread('./data/test5/3.jpg'));
-imgC = im2double(imread('./data/test5/4.jpg'));
-imgD = im2double(imread('./data/test5/1.jpg'));
-imgE = im2double(imread('./data/test5/5.jpg'));
+imgA = im2double(imread('./data/test6/2.jpg'));
+imgB = im2double(imread('./data/test6/3.jpg'));
+imgC = im2double(imread('./data/test6/4.jpg'));
+imgD = im2double(imread('./data/test6/1.jpg'));
+imgE = im2double(imread('./data/test6/5.jpg'));
 
 ratioThresh = 0.7;
 
