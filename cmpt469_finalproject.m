@@ -7,6 +7,9 @@ imgE = im2double(imread('./data/test6/5.jpg'));
 
 ratioThresh = 0.7;
 
+% -------------------------------------------------------------------------
+% This part to build an entire panorama from 5 images. The window size is
+% determined first, and images are projected into that window.
 % First find every best homography
 % imgB is the target (center) image.
 
@@ -43,6 +46,9 @@ imshow(outIm);
 imwrite(outIm,'result1.png');
 keyboard;
 
+% % -------------------------------------------------------------------------
+% % This part to warp images one at a time, resizing the window with each new
+% % warp.
 
 % % -------------------------------------------------------------------------
 % % Get the feature points and match them for imgA and imgB
