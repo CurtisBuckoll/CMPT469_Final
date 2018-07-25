@@ -1,9 +1,9 @@
 
-imgA = im2double(imread('./data/test2/2.jpg'));
-imgB = im2double(imread('./data/test2/3.jpg'));
-imgC = im2double(imread('./data/test2/4.jpg'));
-imgD = im2double(imread('./data/test2/1.jpg'));
-imgE = im2double(imread('./data/test2/5.jpg'));
+imgA = im2double(imread('./data/test5/2.jpg'));
+imgB = im2double(imread('./data/test5/3.jpg'));
+imgC = im2double(imread('./data/test5/4.jpg'));
+imgD = im2double(imread('./data/test5/1.jpg'));
+imgE = im2double(imread('./data/test5/5.jpg'));
 
 ratioThresh = 0.7;
 
@@ -30,15 +30,17 @@ fpvec = getFeaturePoints2(imgE, imgC, ratioThresh);
 [H4, inliers] = findBestHomography(fpvec);
 show_correspondence2(imgE, imgC, inliers(:,1), inliers(:,2), inliers(:,3), inliers(:,4));
 
-[newImH, newImW, translationX, translationY, outIm] = computeProjectionIntoNewImage(imgB, imgA, imgC, imgD, imgE, H1, H2, H3, H4);
+[newImH, newImW, translationX, translationY, outIm] = computeFullOutputWindow(imgB, imgA, imgC, imgD, imgE, H1, H2, H3, H4);
 
 imshow(outIm);
 
-outIm = overlapImage2(imgA, outIm, H1, translationX, translationY);
-outIm = overlapImage2(imgC, outIm, H2, translationX, translationY);
-outIm = overlapImage2(imgD, outIm, H1 * H3, translationX, translationY);
-outIm = overlapImage2(imgE, outIm, H2 * H4, translationX, translationY);
+outIm = overlapImage2(imgA, outIm, H1, translationX, translationY, true);
+outIm = overlapImage2(imgC, outIm, H2, translationX, translationY, false);
+outIm = overlapImage2(imgD, outIm, H1 * H3, translationX, translationY, true);
+outIm = overlapImage2(imgE, outIm, H2 * H4, translationX, translationY, false);
 
+imshow(outIm);
+imwrite(outIm,'result1.png');
 keyboard;
 
 

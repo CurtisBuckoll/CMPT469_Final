@@ -1,7 +1,8 @@
-function outIm = overlapImage2(imgA, target, H, translationX, translationY)
+function outIm = overlapImage2(imgA, target, H, translationX, translationY, blendLR)
 
-outIm = target;
+%outIm = target;
 
+[imTh, imTw, comp] = size(target);
 [imAh, imAw, comp] = size(imgA);
 
 % first get the new window size we must create. We do this by transforming
@@ -24,55 +25,12 @@ maxX = round(max(xformed(:,1)));
 minY = round(min(xformed(:,2)));
 maxY = round(max(xformed(:,2)));
 
-% newImH = imBh;
-% newImW = imBw;
-% 
-% translationX = 0;
-% translationY = 0;
-% 
-% %Compute the new image boundaries.
-% if ( minX < 1 )
-%     newImW = newImW + abs(minX);
-%     translationX = translationX + abs(minX);
-% end
-% if ( maxX > imBw )
-%     newImW = newImW + (abs(maxX) - imBw);
-%     %translationX = translationX + abs(maxX);
-% end
-% if ( minY < 1 )
-%     newImH = newImH + abs(minY);
-%     translationY = translationY + abs(minY);
-% end
-% if ( maxY > imBh )
-%     newImH = newImH + (abs(maxY) - imBh);
-%     %translationY = translationY + abs(maxY);
-% end
-% 
-% outIm = zeros(newImH, newImW, 3);
-% 
-% % Write the underlaying image (imgB) into the new image accounting for the
-% % vertical and horizontal shifts required.
-% for y=1:imBh
-%    for x = 1:imBw
-%        outIm(translationY + y, translationX + x, :) = imgB(y,x,:);
-%    end
-% end
-
-% the minX, maxX, minY, maxY parameters define a bounding box for the warp.
-% We can use these parameters to iterate through and perform the inverse
-% warp on pixels roughly where the image will end up before translated to
-% be in frame.
-
-% depending on orientation, it seems that we have to account for
-% realignment in some cases..
-%overlay_translX = 0;
-%overlay_translY = 0;
-
 inv_H = inv(H);
 
-% if (minX > 1 )
-%    overlay_translX = minX; 
-% end
+% -------------------------------------------------------------------------
+% Taking below code and adding functionality for blending..
+
+img_projected = zeros(imTh, imTw, 3);
 
 for y=1:maxY - minY
    for x=1:maxX - minX
@@ -82,12 +40,35 @@ for y=1:maxY - minY
         
         if (v >= 1 && v <= imAh && u >= 1 && u <= imAw )
             
-            outIm(y + minY + translationY, x + minX + translationX,:) = imgA(v,u,:); %0.5 .* imgA(y,x,:) + 0.5 .* imgB(v,u,:);
+            img_projected(y + minY + translationY, x + minX + translationX,:) = imgA(v,u,:); %0.5 .* imgA(y,x,:) + 0.5 .* imgB(v,u,:);
         end
    end
 end
 
+outIm = twoBandBlend(img_projected, target, blendLR);
 imshow(outIm);
+
+%imshow(target);
+%imshow(img_projected);
+
+%keyboard;
+
+% -------------------------------------------------------------------------
+
+% for y=1:maxY - minY
+%    for x=1:maxX - minX
+%         to_sample = transformByH( inv_H, [x+minX-1, y+minY-1] );
+%         u         = round(to_sample(1,1));
+%         v         = round(to_sample(1,2));
+%         
+%         if (v >= 1 && v <= imAh && u >= 1 && u <= imAw )
+%             
+%             outIm(y + minY + translationY, x + minX + translationX,:) = imgA(v,u,:); %0.5 .* imgA(y,x,:) + 0.5 .* imgB(v,u,:);
+%         end
+%    end
+% end
+
+
 %keyboard;
 
 end
