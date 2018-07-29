@@ -1,11 +1,11 @@
 
-imgA = im2double(imread('./data/test6/2.jpg'));
-imgB = im2double(imread('./data/test6/3.jpg'));
-imgC = im2double(imread('./data/test6/4.jpg'));
-imgD = im2double(imread('./data/test6/1.jpg'));
-imgE = im2double(imread('./data/test6/5.jpg'));
+imgA = im2double(imread('./data/test10/2.jpg'));
+imgB = im2double(imread('./data/test10/3.jpg'));
+imgC = im2double(imread('./data/test10/4.jpg'));
+imgD = im2double(imread('./data/test10/1.jpg'));
+imgE = im2double(imread('./data/test10/5.jpg'));
 
-ratioThresh = 0.7;
+ratioThresh = 0.8;
 
 % -------------------------------------------------------------------------
 % This part to build an entire panorama from 5 images. The window size is
@@ -37,10 +37,10 @@ show_correspondence2(imgE, imgC, inliers(:,1), inliers(:,2), inliers(:,3), inlie
 
 imshow(outIm);
 
-outIm = overlapImage2(imgA, outIm, H1, translationX, translationY, true);
-outIm = overlapImage2(imgC, outIm, H2, translationX, translationY, false);
-outIm = overlapImage2(imgD, outIm, H1 * H3, translationX, translationY, true);
-outIm = overlapImage2(imgE, outIm, H2 * H4, translationX, translationY, false);
+%outIm = overlapImage2(imgA, outIm, H1, translationX, translationY, true);
+outIm = overlapImage2(imgC, outIm, H2, translationX, translationY, false, false);
+%outIm = overlapImage2(imgD, outIm, H1 * H3, translationX, translationY, true);
+outIm = overlapImage2(imgE, outIm, H2 * H4, translationX, translationY, false, false);
 
 imshow(outIm);
 imwrite(outIm,'result1.png');
@@ -50,61 +50,129 @@ keyboard;
 % % This part to warp images one at a time, resizing the window with each new
 % % warp.
 
+doBlend = false;
+
 % % -------------------------------------------------------------------------
-% % Get the feature points and match them for imgA and imgB
-% fpvec = getFeaturePoints2(imgA, imgB, ratioThresh);
-% 
-% show_correspondence2(imgA, imgB, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
-% 
-% [H, inliers] = findBestHomography(fpvec);
-% 
-% show_correspondence2(imgA, imgB, inliers(:,1), inliers(:,2), inliers(:,3), inliers(:,4));
-% 
-% outIm1 = overlapImage(imgA, imgB, H);
-% 
-% % -------------------------------------------------------------------------
-% % Now do the same with outIm1 and imgC
-% 
-% fpvec = getFeaturePoints2(imgC, outIm1, ratioThresh);
-% 
-% show_correspondence2(imgC, outIm1, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
-% 
-% [H, inliers] = findBestHomography(fpvec);
-% 
-% show_correspondence2(imgC, outIm1, inliers(:,1), inliers(:,2), inliers(:,3), inliers(:,4));
-% 
-% outIm1 = overlapImage(imgC, outIm1, H);
+% % fpvec = getFeaturePoints2(imgE, imgC, ratioThresh);
+% % 
+% % I = show_correspondence2(imgC, imgE, 0, 0, 0, 0);
+% % saveas(I, '.\results\1.png');
+% % 
+% % I = show_correspondence2(imgC, imgE, fpvec(:,3), fpvec(:,4),fpvec(:,1), fpvec(:,2));
+% % saveas(I, '.\results\2.png');
+% % 
+% % [H, inliers] = findBestHomography(fpvec);
+% % 
+% % I = show_correspondence2(imgC, imgE, inliers(:,3), inliers(:,4), inliers(:,1), inliers(:,2));
+% % saveas(I, '.\results\3.png');
+% % 
+% % outIm1 = overlapImage(imgE, imgC, H, false, doBlend, false);
+% % imwrite(outIm1, '.\results\4.png');
 % 
 % % -------------------------------------------------------------------------
-% % Now do the same with outIm1 and imgC
 % 
-% fpvec = getFeaturePoints2(imgD, outIm1, ratioThresh);
-% 
-% show_correspondence2(imgD, outIm1, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
-% 
-% [H, inliers] = findBestHomography(fpvec);
-% 
-% show_correspondence2(imgD, outIm1, inliers(:,1), inliers(:,2), inliers(:,3), inliers(:,4));
-% 
-% outIm1 = overlapImage(imgD, outIm1, H);
-% 
+% % outIm1 = im2double(imread('.\results\SIFT_indifference\method2\4.png'));
+% % 
+% % fpvec = getFeaturePoints2(imgC, imgB, ratioThresh);
+% % 
+% % I = show_correspondence2(imgB, outIm1, 0, 0, 0, 0);
+% % saveas(I, '.\results\5.png');
+% % 
+% % I = show_correspondence2(imgB, outIm1, fpvec(:,3), fpvec(:,4), fpvec(:,1), fpvec(:,2));
+% % saveas(I, '.\results\6.png');
+% % 
+% % [H, inliers] = findBestHomography(fpvec);
+% % 
+% % I = show_correspondence2(imgB, outIm1, inliers(:,3), inliers(:,4),inliers(:,1), inliers(:,2));
+% % saveas(I, '.\results\7.png');
+% % 
+% % outIm1 = overlapImage(outIm1, imgB, H, false, doBlend, true);
+% % imwrite(outIm1, '.\results\8.png');
+% % 
+% % keyboard;
 % % -------------------------------------------------------------------------
-% % Now do the same with outIm1 and imgC
-% 
-% fpvec = getFeaturePoints2(imgE, outIm1, ratioThresh);
-% 
-% show_correspondence2(imgE, outIm1, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
-% 
-% [H, inliers] = findBestHomography(fpvec);
-% 
-% show_correspondence2(imgE, outIm1, inliers(:,1), inliers(:,2), inliers(:,3), inliers(:,4));
-% 
-% outIm1 = overlapImage(imgE, outIm1, H);
-% 
-% 
-% keyboard;
-% 
-% % -------------------------------------------------------------------------
+
+
+
+
+% -------------------------------------------------------------------------
+% Get the feature points and match them for imgA and imgB
+fpvec = getFeaturePoints2(imgA, imgB, ratioThresh);
+
+I = show_correspondence2(imgA, imgB, 0, 0, 0, 0);
+saveas(I, '.\results\1.png');
+
+I = show_correspondence2(imgA, imgB, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
+saveas(I, '.\results\2.png');
+
+[H, inliers] = findBestHomography(fpvec);
+
+I = show_correspondence2(imgA, imgB, inliers(:,1), inliers(:,2), inliers(:,3), inliers(:,4));
+saveas(I, '.\results\3.png');
+
+outIm1 = overlapImage(imgA, imgB, H, false, doBlend, false);
+imwrite(outIm1, '.\results\4.png');
+
+% -------------------------------------------------------------------------
+% Now do the same with outIm1 and imgC
+
+fpvec = getFeaturePoints2(imgC, outIm1, ratioThresh);
+
+I = show_correspondence2(imgC, outIm1, 0, 0, 0, 0);
+saveas(I, '.\results\5.png');
+
+I = show_correspondence2(imgC, outIm1, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
+saveas(I, '.\results\6.png');
+
+[H, inliers] = findBestHomography(fpvec);
+
+I = show_correspondence2(imgC, outIm1, inliers(:,1), inliers(:,2), inliers(:,3), inliers(:,4));
+saveas(I, '.\results\7.png');
+
+outIm1 = overlapImage(imgC, outIm1, H, false, doBlend, true);
+imwrite(outIm1, '.\results\8.png');
+
+% -------------------------------------------------------------------------
+% Now do the same with outIm1 and imgC
+
+fpvec = getFeaturePoints2(imgD, outIm1, ratioThresh);
+
+I = show_correspondence2(imgD, outIm1, 0, 0, 0, 0);
+saveas(I, '.\results\9.png');
+
+I = show_correspondence2(imgD, outIm1, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
+saveas(I, '.\results\10.png');
+
+[H, inliers] = findBestHomography(fpvec);
+
+I = show_correspondence2(imgD, outIm1, inliers(:,1), inliers(:,2), inliers(:,3), inliers(:,4));
+saveas(I, '.\results\11.png');
+
+outIm1 = overlapImage(imgD, outIm1, H, false, doBlend, false);
+imwrite(outIm1, '.\results\12.png');
+
+% -------------------------------------------------------------------------
+% Now do the same with outIm1 and imgC
+
+fpvec = getFeaturePoints2(imgE, outIm1, ratioThresh);
+
+I = show_correspondence2(imgE, outIm1, 0, 0, 0, 0);
+saveas(I, '.\results\13.png');
+
+I = show_correspondence2(imgE, outIm1, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
+saveas(I, '.\results\14.png');
+
+[H, inliers] = findBestHomography(fpvec);
+I = show_correspondence2(imgE, outIm1, inliers(:,1), inliers(:,2), inliers(:,3), inliers(:,4));
+saveas(I, '.\results\15.png');
+
+outIm1 = overlapImage(imgE, outIm1, H, false, doBlend, true);
+imwrite(outIm1, '.\results\16.png');
+
+
+keyboard;
+
+% -------------------------------------------------------------------------
 
 
 

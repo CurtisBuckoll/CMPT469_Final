@@ -1,4 +1,4 @@
-function outIm = overlapImage2(imgA, target, H, translationX, translationY, blendLR)
+function outIm = overlapImage2(imgA, target, H, translationX, translationY, blend, blendLR)
 
 %outIm = target;
 
@@ -45,8 +45,18 @@ for y=1:maxY - minY
    end
 end
 
-outIm = twoBandBlend(img_projected, target, blendLR);
+if ( blend )
+    outIm = twoBandBlend(img_projected, target, blendLR);
+else
+    targetMask = rgb2gray(target) > 0;
+    projMask   = rgb2gray(img_projected) > 0;
+    outIm = img_projected + target .* xor(targetMask, targetMask & projMask);
+end
+
+%outIm = twoBandBlend(img_projected, target, blendLR);
+
 imshow(outIm);
+keyboard;
 
 %imshow(target);
 %imshow(img_projected);

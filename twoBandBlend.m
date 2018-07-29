@@ -70,8 +70,10 @@ for x=startX:endX
            %blended(y,x,:) = (1-r) .* (im1_low(y,x,:) + im1_high(y,x,:)) + r .* (im2_low(y,x,:) + im2_high(y,x,:));
            
            % blend the hi freq on a different (non-linear) curve.
-           r_hi = 1/(e^(-(30*(r-0.5))) + 1);
-           blended(y,x,:) = (1-r_hi) .* im1_low(y,x,:) + r_hi .* im2_low(y,x,:) + (1-r_hi) .* im1_high(y,x,:) + r_hi .* im2_high(y,x,:);
+           r_hi  = 1/(e^(-(30*(r-0.5))) + 1);
+           r_low = 1/(e^(-(10*(r-0.5))) + 1);
+           %blended(y,x,:) = (1-r_hi) .* im1_low(y,x,:) + r_hi .* im2_low(y,x,:) + (1-r_hi) .* im1_high(y,x,:) + r_hi .* im2_high(y,x,:);
+           blended(y,x,:) = (1-r_low) .* im1_low(y,x,:) + r_low .* im2_low(y,x,:) + (1-r_hi) .* im1_high(y,x,:) + r_hi .* im2_high(y,x,:);
        end
    end
 end
