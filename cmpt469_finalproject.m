@@ -1,11 +1,11 @@
 
-imgA = im2double(imread('./data/test10/2.jpg'));
-imgB = im2double(imread('./data/test10/3.jpg'));
-imgC = im2double(imread('./data/test10/4.jpg'));
-imgD = im2double(imread('./data/test10/1.jpg'));
-imgE = im2double(imread('./data/test10/5.jpg'));
+imgA = im2double(imread('./data/test14/2.jpg'));
+imgB = im2double(imread('./data/test14/3.jpg'));
+imgC = im2double(imread('./data/test14/4.jpg'));
+imgD = im2double(imread('./data/test14/1.jpg'));
+imgE = im2double(imread('./data/test14/5.jpg'));
 
-ratioThresh = 0.8;
+ratioThresh = 0.7;
 
 % -------------------------------------------------------------------------
 % This part to build an entire panorama from 5 images. The window size is
@@ -13,44 +13,44 @@ ratioThresh = 0.8;
 % First find every best homography
 % imgB is the target (center) image.
 
-fpvec = getFeaturePoints2(imgA, imgB, ratioThresh);
-%show_correspondence2(imgA, imgB, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
-[H1, inliers] = findBestHomography(fpvec);
-show_correspondence2(imgA, imgB, inliers(:,1), inliers(:,2), inliers(:,3), inliers(:,4));
-
-fpvec = getFeaturePoints2(imgC, imgB, ratioThresh);
-%show_correspondence2(imgC, imgB, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
-[H2, inliers] = findBestHomography(fpvec);
-show_correspondence2(imgC, imgB, inliers(:,1), inliers(:,2), inliers(:,3), inliers(:,4));
-
-fpvec = getFeaturePoints2(imgD, imgA, ratioThresh);
-%show_correspondence2(imgD, imgA, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
-[H3, inliers] = findBestHomography(fpvec);
-show_correspondence2(imgD, imgA, inliers(:,1), inliers(:,2), inliers(:,3), inliers(:,4));
-
-fpvec = getFeaturePoints2(imgE, imgC, ratioThresh);
-%show_correspondence2(imgE, imgC, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
-[H4, inliers] = findBestHomography(fpvec);
-show_correspondence2(imgE, imgC, inliers(:,1), inliers(:,2), inliers(:,3), inliers(:,4));
-
-[newImH, newImW, translationX, translationY, outIm] = computeFullOutputWindow(imgB, imgA, imgC, imgD, imgE, H1, H2, H3, H4);
-
-imshow(outIm);
-
-%outIm = overlapImage2(imgA, outIm, H1, translationX, translationY, true);
-outIm = overlapImage2(imgC, outIm, H2, translationX, translationY, false, false);
-%outIm = overlapImage2(imgD, outIm, H1 * H3, translationX, translationY, true);
-outIm = overlapImage2(imgE, outIm, H2 * H4, translationX, translationY, false, false);
-
-imshow(outIm);
-imwrite(outIm,'result1.png');
-keyboard;
+% fpvec = getFeaturePoints2(imgA, imgB, ratioThresh);
+% %show_correspondence2(imgA, imgB, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
+% [H1, inliers] = findBestHomography(fpvec);
+% show_correspondence2(imgA, imgB, inliers(:,1), inliers(:,2), inliers(:,3), inliers(:,4));
+% 
+% fpvec = getFeaturePoints2(imgC, imgB, ratioThresh);
+% %show_correspondence2(imgC, imgB, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
+% [H2, inliers] = findBestHomography(fpvec);
+% show_correspondence2(imgC, imgB, inliers(:,1), inliers(:,2), inliers(:,3), inliers(:,4));
+% 
+% fpvec = getFeaturePoints2(imgD, imgA, ratioThresh);
+% %show_correspondence2(imgD, imgA, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
+% [H3, inliers] = findBestHomography(fpvec);
+% show_correspondence2(imgD, imgA, inliers(:,1), inliers(:,2), inliers(:,3), inliers(:,4));
+% 
+% fpvec = getFeaturePoints2(imgE, imgC, ratioThresh);
+% %show_correspondence2(imgE, imgC, fpvec(:,1), fpvec(:,2), fpvec(:,3), fpvec(:,4));
+% [H4, inliers] = findBestHomography(fpvec);
+% show_correspondence2(imgE, imgC, inliers(:,1), inliers(:,2), inliers(:,3), inliers(:,4));
+% 
+% [newImH, newImW, translationX, translationY, outIm] = computeFullOutputWindow(imgB, imgA, imgC, imgD, imgE, H1, H2, H3, H4);
+% 
+% imshow(outIm);
+% 
+% %outIm = overlapImage2(imgA, outIm, H1, translationX, translationY, true);
+% outIm = overlapImage2(imgC, outIm, H2, translationX, translationY, false, false);
+% %outIm = overlapImage2(imgD, outIm, H1 * H3, translationX, translationY, true);
+% outIm = overlapImage2(imgE, outIm, H2 * H4, translationX, translationY, false, false);
+% 
+% imshow(outIm);
+% imwrite(outIm,'result1.png');
+% keyboard;
 
 % % -------------------------------------------------------------------------
 % % This part to warp images one at a time, resizing the window with each new
 % % warp.
 
-doBlend = false;
+doBlend = true;
 
 % % -------------------------------------------------------------------------
 % % fpvec = getFeaturePoints2(imgE, imgC, ratioThresh);

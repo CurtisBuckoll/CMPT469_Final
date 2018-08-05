@@ -8,6 +8,10 @@ edge_thresh = 6.0;
 [f1,d1] = vl_sift(single(rgb2gray(imgA)));
 [f2,d2] = vl_sift(single(rgb2gray(imgB)));
 
+%I = show_correspondence(imgA, imgB, f1(1,1:4000)', f1(2,1:4000)', f2(1,1:4000)', f2(2,1:4000)');
+%saveas(I, '.\results\before_ratio.png');
+
+
 matches = getFeatureMatches(d1, d2, thresh);
 
 %size(matches, 2)
